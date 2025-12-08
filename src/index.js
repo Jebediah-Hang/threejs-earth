@@ -33,7 +33,8 @@ const params = {
   metalness: 0.1,
   atmOpacity: { value: 0.7 },
   atmPowFactor: { value: 4.1 },
-  atmMultiplier: { value: 9.5 },
+  atmMultiplier: { value: 12 },
+  atmNightFade: { value: 0.2 }
 }
 
 
@@ -138,7 +139,9 @@ let app = {
       uniforms: {
         atmOpacity: params.atmOpacity,
         atmPowFactor: params.atmPowFactor,
-        atmMultiplier: params.atmMultiplier
+        atmMultiplier: params.atmMultiplier,
+        atmNightFade: params.atmNightFade,
+        sunDirection: { value: this.dirLight.position.clone().normalize() }
       },
       // notice that by default, Three.js uses NormalBlending, where if your opacity of the output color gets lower, the displayed color might get whiter
       blending: THREE.AdditiveBlending, // works better than setting transparent: true, because it avoids a weird dark edge around the earth
@@ -192,7 +195,7 @@ let app = {
           // for lit side of the earth, the reverse happens thus emissiveColor would be multiplied with 0.
           // The smoothstep is to smoothen the change between night and day
           
-          emissiveColor *= 1.0 - smoothstep(-0.02, 0.0, dot(geometryNormal, directionalLights[0].direction));
+          emissiveColor *= 1.0 - smoothstep(-0.1, 0.2, dot(geometryNormal, directionalLights[0].direction));
           
           totalEmissiveRadiance *= emissiveColor.rgb;
 
@@ -246,6 +249,7 @@ let app = {
     gui.add(params.atmOpacity, "value", 0.0, 1.0, 0.05).name("atmOpacity")
     gui.add(params.atmPowFactor, "value", 0.0, 20.0, 0.1).name("atmPowFactor")
     gui.add(params.atmMultiplier, "value", 0.0, 20.0, 0.1).name("atmMultiplier")
+    gui.add(params.atmNightFade, "value", 0.0, 1.0, 0.05).name("atmNightFade")
 
     // Stats - show fps
     this.stats1 = new Stats()

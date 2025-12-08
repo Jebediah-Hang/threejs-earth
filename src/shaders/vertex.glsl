@@ -1,5 +1,6 @@
 varying vec3 vNormal;
 varying vec3 eyeVector;
+varying vec3 vWorldPosition;
 
 void main() {
     // modelMatrix transforms the coordinates local to the model into world space
@@ -10,6 +11,8 @@ void main() {
 
     // vector pointing from camera to vertex in view space
     eyeVector = normalize(mvPos.xyz);
+
+    vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
 
     gl_Position = projectionMatrix * mvPos;
 }
